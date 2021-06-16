@@ -2573,6 +2573,16 @@ spec:
           name: gpg-keys
         - mountPath: /app/config/gpg/keys
           name: gpg-keyring
+        - mountPath: /usr/local/bin/kustomize_4_1_2
+          name: custom-tools
+          subPath: kustomize
+      initContainers:
+      - name: download-kustomize4
+        image: k8s.gcr.io/kustomize/kustomize:v4.1.2
+        command: ["cp", "kustomize", "/custom-tools/"]
+        volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
       volumes:
       - configMap:
           name: argocd-ssh-known-hosts-cm
@@ -2585,6 +2595,8 @@ spec:
         name: gpg-keys
       - emptyDir: {}
         name: gpg-keyring
+      - emptyDir: {}
+        name: custom-tools
 ---
 apiVersion: apps/v1
 kind: Deployment
