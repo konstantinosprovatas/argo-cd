@@ -2576,13 +2576,18 @@ spec:
         - mountPath: /usr/local/bin/kustomize_4_1_2
           name: custom-tools
           subPath: kustomize
-      initContainers:
-      - name: download-kustomize4
-        image: k8s.gcr.io/kustomize/kustomize:v4.1.2
-        command: ["cp", "kustomize", "/custom-tools/"]
-        volumeMounts:
-        - mountPath: /custom-tools
+        - mountPath: /usr/local/bin/kustomize_4_1_2_with_enabled_helm
           name: custom-tools
+          subPath: kustomize-with-enabled-helm
+      initContainers:
+        - name: setup-kustomize4
+          image: k8s.gcr.io/kustomize/kustomize:v4.1.2
+          command: [ sh, -c ]
+          args:
+            - cp kustomize /custom-tools/kustomize && echo '#!/bin/bash' >> /custom-tools/kustomize-with-enabled-helm && echo '/usr/local/bin/kustomize_4_1_2 "$@" --enable-helm' >> /custom-tools/kustomize-with-enabled-helm && chmod a+x /custom-tools/kustomize-with-enabled-helm
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
       volumes:
       - configMap:
           name: argocd-ssh-known-hosts-cm
