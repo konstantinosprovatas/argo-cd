@@ -2567,6 +2567,9 @@ spec:
           periodSeconds: 10
           tcpSocket:
             port: 8081
+        resources:
+          requests:
+            cpu: "1000m"
         volumeMounts:
         - mountPath: /app/config/ssh
           name: ssh-known-hosts
@@ -2733,4 +2736,7 @@ spec:
             port: 8082
           initialDelaySeconds: 5
           periodSeconds: 10
+        resources:
+          requests:
+            cpu: "1000m"
       serviceAccountName: argocd-application-controller
